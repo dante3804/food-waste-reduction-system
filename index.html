@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 기반 음식물 쓰레기 감소 시스템</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>음식물 쓰레기 감소 시스템</h1>
+    </header>
+    <main>
+        <section id="map-section">
+            <h2>퇴비화 및 처리 위치</h2>
+            <div id="map"></div>
+        </section>
+        <section id="input-section">
+            <h2>남은 음식 입력</h2>
+            <form id="food-form">
+                <label for="food-type">음식 종류:</label>
+                <input type="text" id="food-type" name="food-type" required>
+                
+                <label for="quantity">수량 (kg):</label>
+                <input type="number" id="quantity" name="quantity" required>
+                
+                <button type="submit">제출</button>
+            </form>
+            <p id="purchase-warning" style="display: none;">참고: 수요가 많을 것으로 예상됩니다. 재료를 추가 구매하세요.</p>
+        </section>
+    </main>
+    <footer>
+        <p>GitHub Pages 제공</p>
+    </footer>
+</body>
+</html>
