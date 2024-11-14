@@ -1,35 +1,57 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 기반 음식물 쓰레기 감소 시스템</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <meta charset="UTF-8">
+  <title>영상에서 사람 수 감지</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <style>
+    #video {
+      max-width: 100%;
+      display: block;
+      margin-bottom: 10px;
+    }
+    #personCount {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <header style="position: fixed; top: 0; width: 100%; background-color: #ffffff; padding: 10px 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); text-align: center; z-index: 1000;">
-        <h1>음식물 쓰레기 감소 시스템</h1>
-    </header>
-    <main style="padding-top: 70px;">
-        <section id="map-section">
-            <h2>퇴비화 및 처리 위치</h2>
-            <div id="map"></div>
-        </section>
-        <section id="input-section">
-            <h2>남은 음식 입력</h2>
-            <form id="food-form">
-                <label for="food-type">음식 종류:</label>
-                <input type="text" id="food-type" name="food-type" required>
-                
-                <label for="quantity">수량 (kg):</label>
-                <input type="number" id="quantity" name="quantity" required>
-                
-                <button type="submit">제출</button>
-            </form>
-            <p id="purchase-warning" style="display: none;">참고: 수요가 많을 것으로 예상됩니다. 재료를 추가 구매하세요.</p>
-        </section>
-    </main>
+  <h1>영상에서 사람 수 감지</h1>
+  <input type="file" accept="video/*" id="videoUpload">
+  <video id="video" controls></video>
+  <div id="personCount">사람 수: 0</div>
+
+  <script>
+    const video = document.getElementById('video');
+    const personCountDisplay = document.getElementById('personCount');
+    let model;
+
+    async function loadModel() {
+      model = await cocoSsd.load();
+      console.log('모델 로드 완료');
+    }
+
+    document.getElementById('videoUpload').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        video.src = fileURL;
+        video.addEventListener('loadeddata', analyzeVideo);
+      }
+    });
+
+    async function analyzeVideo() {
+      while (!video.paused && !video.ended) {
+        const predictions = await model.detect(video);
+        const personCount = predictions.filter(pred => pred.class === 'person').length;
+        personCountDisplay.innerText = `사람 수: ${personCount}`;
+        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms 대기
+      }
+    }
+
+    loadModel();
+  </script>
 </body>
 </html>
